@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11232" systemVersion="15G31" minimumToolsVersion="Xcode 7.0" sourceLanguage="Objective-C" userDefinedModelVersionIdentifier="">
+    <entity name="BFF" syncable="YES">
+        <attribute name="bffDomain" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="bffEmail" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="bffGalons" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="bffGroup" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="bffImage" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="bffKwH" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="bffLastIpPort" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="bffLimbo" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="bffMQTT" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="bffMQTTPort" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="bffName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="bffOffline" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="bffOnOff" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="bffPhone" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="bffPort" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="bffRelayTime" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="bffUID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="bffVolts" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="bffWater" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="bffWatts" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="correos" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Emails" inverseName="bff" inverseEntity="Emails" syncable="YES"/>
+        <relationship name="log" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Log" inverseName="bff" inverseEntity="Log" syncable="YES"/>
+        <relationship name="meals" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Servings" inverseName="bff" inverseEntity="Servings" syncable="YES"/>
+    </entity>
+    <entity name="Emails" syncable="YES">
+        <attribute name="address" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="bffName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="color" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="emailName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="rule" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="bff" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BFF" inverseName="correos" inverseEntity="BFF" syncable="YES"/>
+    </entity>
+    <entity name="Log" syncable="YES">
+        <attribute name="logAlert" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="logAlertDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="logBff" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="logDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="logId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="logText" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="bff" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BFF" inverseName="log" inverseEntity="BFF" syncable="YES"/>
+    </entity>
+    <entity name="Servings" syncable="YES">
+        <attribute name="dateAdded" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="hastaDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="servBFFName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="servDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="servDays" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="servName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="servNotis" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="servOnOff" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="servPassword" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="servTempMax" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="servTempMin" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="bff" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="BFF" inverseName="meals" inverseEntity="BFF" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="BFF" positionX="-1091" positionY="326" width="128" height="390"/>
+        <element name="Emails" positionX="-1305" positionY="419" width="128" height="135"/>
+        <element name="Log" positionX="-1305" positionY="531" width="128" height="150"/>
+        <element name="Servings" positionX="-848" positionY="378" width="128" height="225"/>
+    </elements>
+</model>

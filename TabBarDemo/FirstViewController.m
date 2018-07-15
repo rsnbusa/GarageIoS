@@ -22,7 +22,6 @@
 #include <arpa/inet.h>
 #import <SystemConfiguration/CaptiveNetwork.h>
 #import <NetworkExtension/NEHotspotHelper.h>
-
 //#import <AdSupport/ASIdentifierManager.h>
 @interface FirstViewController ()
 
@@ -43,16 +42,31 @@ struct CTServerConnection *sc=NULL;
 void callback() { }
 id yo;
 
--(void)blurScreen
+-(void)killBill
 {
-    return;
-    CGRect screenSize = [UIScreen mainScreen].bounds;
-    UIImage *screenShot = [self.view screenshot];
-    UIImage *blurImage  = [screenShot blurredImageWithRadius:10.5 iterations:2 tintColor:nil];
-    backGroundBlurr = [[UIImageView alloc]initWithImage:blurImage];
-    backGroundBlurr.frame = CGRectMake(0, 0, screenSize.size.width, screenSize.size.height);
-    [self.view addSubview:backGroundBlurr];
+    if(tumblrHUD)
+        [tumblrHUD hide];
+    [self showMensaje:@"DoorIoT Msg" withMessage:@"Comm Timeout" doExit:NO];
 }
+
+-(void)hud
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        tumblrHUD = [[AMTumblrHud alloc] initWithFrame:CGRectMake((CGFloat) (_hhud.frame.origin.x),
+                                                                  (CGFloat) (_hhud.frame.origin.y), 55, 20)];
+        tumblrHUD.hudColor = _hhud.backgroundColor;
+        [self.view addSubview:tumblrHUD];
+        [tumblrHUD showAnimated:YES];
+        mitimer=[NSTimer scheduledTimerWithTimeInterval:10
+                                                 target:self
+                                               selector:@selector(killBill)
+                                               userInfo:nil
+                                                repeats:NO];
+    });
+}
+
+
+
 
 -(void)oneTap:(id)sender
 {
@@ -77,13 +91,11 @@ id yo;
 
  -(void)showMensaje:(NSString*)title withMessage:(NSString*)mensaje doExit:(BOOL)salir
 {
-    [self blurScreen];
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
                                                                    message:mensaje
                                                             preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction * action) {
-                                                              [backGroundBlurr removeFromSuperview];
                                                                if (salir) exit(0);
                                                           }];
     
@@ -93,15 +105,14 @@ id yo;
 
 -(void)confirmDelete
 {
-    [self blurScreen];
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Delete Heater"
                                                                    message:[NSString stringWithFormat:@"You really want to remove %@",[appDelegate.workingBFF valueForKey:@"bffName"]]
                                                             preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction * action) {
-                                                              [backGroundBlurr removeFromSuperview];
                                                               NSString *mis=[NSString stringWithFormat:@"erase?bff=%@",
                                                                                 [appDelegate.workingBFF valueForKey:@"bffName"]];
+                                                              [self hud];
                                                               [comm lsender:mis andAnswer:NULL andTimeOut:[[[NSUserDefaults standardUserDefaults]objectForKey:@"txTimeOut"] intValue]];
                                                               //return;//should be return
                                                               [self deleteAllEntity:@"Emails"];
@@ -127,7 +138,6 @@ id yo;
                                                           }];
     UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction * action) {
-                                                              [backGroundBlurr removeFromSuperview];
                                                           }];
     
     [alert addAction:defaultAction];
@@ -140,12 +150,14 @@ id yo;
 
 - (IBAction)bffOnOff:(UIButton*)sender
 {
+    [self hud];
     [comm lsender:@"openDoor?password=zipo" andAnswer:NULL andTimeOut:[[[NSUserDefaults standardUserDefaults]objectForKey:@"txTimeOut"] intValue]];
   }
 
 
 - (IBAction)refresh:(UIButton*)sender
 {
+    [self hud];
     [comm lsender:@"status" andAnswer:NULL andTimeOut:1 vcController:self];
 }
 
@@ -209,6 +221,7 @@ id yo;
 //    assert(self.fileStream == nil);         // ditto
     NSString *filef=[NSString stringWithFormat:@"ftp://feediot.co.nf/%@",elNombre];
     NSString *mis=[NSString stringWithFormat:@"image?w=%d&h=%d",w,h];
+    [self hud];
     [comm lsender:mis andAnswer:NULL andTimeOut:[[[NSUserDefaults standardUserDefaults]objectForKey:@"txTimeOut"] intValue] vcController:self];
 
     
@@ -318,7 +331,9 @@ id yo;
 {
     //You can retrieve the actual UIImage
     UIImage *estai = [info valueForKey:UIImagePickerControllerOriginalImage];
-    imagel=[UIImage imageWithCGImage:estai.CGImage scale:1.0 orientation:estai.imageOrientation];
+    UIImage *imagel = [self scaleAndRotateImage: [info objectForKey:UIImagePickerControllerOriginalImage]];
+
+//imagel=[UIImage imageWithCGImage:estai.CGImage scale:1.0 orientation:estai.imageOrientation];
     // Create path.
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *final=[NSString stringWithFormat:@"%@.txt",[appDelegate.workingBFF valueForKey:@"bffName"]];//.txt hasta que tengamos webiste ue nos permita usar .png
@@ -414,6 +429,7 @@ id yo;
     appDelegate.workingBFF=appDelegate.bffs[indexOfPage];
     // Subscribe new mqtt queues
     [appDelegate subscribeMQTT:[NSString stringWithFormat:@"DoorIoT/%@/%@/%@/MSG",[appDelegate.workingBFF valueForKey:@"bffName"],[appDelegate.workingBFF valueForKey:@"bffName"],[[NSUserDefaults standardUserDefaults]objectForKey:@"bffUID"]]];
+    [self hud];
     [comm lsender:@"status" andAnswer:NULL andTimeOut:2 vcController:self];
      appDelegate.messageType=(int)[[appDelegate.workingBFF valueForKey:@"bffLimbo"]integerValue];
     NSInteger randomNumber = arc4random() % (appDelegate.appColors.count -1);
@@ -430,15 +446,14 @@ id yo;
     [self getArrays];
 }
 
-
-- (UIImage *)scaleAndRotateImage:(UIImage *)image
-{
-    int kMaxResolution = 320; // Or whatever
-    return image;
+- (UIImage *)scaleAndRotateImage:(UIImage *) image {
+    int kMaxResolution = 320;
+    
     CGImageRef imgRef = image.CGImage;
     
     CGFloat width = CGImageGetWidth(imgRef);
     CGFloat height = CGImageGetHeight(imgRef);
+    
     
     CGAffineTransform transform = CGAffineTransformIdentity;
     CGRect bounds = CGRectMake(0, 0, width, height);
@@ -537,7 +552,6 @@ id yo;
     UIGraphicsEndImageContext();
     
     return imageCopy;
-    //return imageCopy;
 }
 
 
@@ -707,13 +721,14 @@ id yo;
 
 -(IBAction)sleep:(id)sender
 {
+    [self hud];
     [comm lsender:@"sleep?password=zipo" andAnswer:NULL andTimeOut:1 vcController:self];
 
 }
 
 -(IBAction)activateOnBreak:(id)sender
 {
-    
+    [self hud];
     [comm lsender:@"break?password=zipo" andAnswer:NULL andTimeOut:1 vcController:self];
 }
 
@@ -932,7 +947,6 @@ if (!appDelegate.passwordf)
 }
 -(void)showMessage:(NSString*)que
 {
-    [self blurScreen];
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Server Information"
                                                                    message:que                                                            preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
@@ -1001,6 +1015,7 @@ MQTTMessageHandler aca=^(MQTTMessage *message)
 
 
 -(void)show{
+    [self hud];
     [comm lsender:@"status" andAnswer:NULL andTimeOut:2 vcController:self];
 }
 
@@ -1051,6 +1066,7 @@ MQTTMessageHandler aca=^(MQTTMessage *message)
             if(appDelegate.client)
                [appDelegate.client setMessageHandler:aca];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+            [self hud];
                 [comm lsender:@"session?password=zipo" andAnswer:NULL andTimeOut:1 vcController:self];
             });
         }

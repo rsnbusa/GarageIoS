@@ -8,6 +8,11 @@
 
 #import "Log.h"
 #import "LogCell.h"
+#if 0 // set to 1 to enable logs
+#define LogDebug(frmt, ...) NSLog([frmt stringByAppendingString:@"[%s]{%d}"], ##__VA_ARGS__,__PRETTY_FUNCTION__,__LINE__);
+#else
+#define LogDebug(frmt, ...) {}
+#endif
 
 @interface Log ()
 
@@ -15,9 +20,50 @@
 
 @implementation Log
 
-
 id yo;
 
+-(void)showMensaje:(NSString*)title withMessage:(NSString*)mensaje doExit:(BOOL)salir
+{
+    if(mitimer)
+        [mitimer invalidate];
+    dispatch_async(dispatch_get_main_queue(), ^{[tumblrHUD hide]; });
+    
+    
+    
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:mensaje
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {
+                                                              if (salir) exit(0);
+                                                          }];
+    
+    [alert addAction:defaultAction];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+-(void)killBill
+{
+    if(tumblrHUD)
+        [tumblrHUD hide];
+    [self showMensaje:@"DoorIoT Msg" withMessage:@"Comm Timeout" doExit:NO];
+}
+
+-(void)hud
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        tumblrHUD = [[AMTumblrHud alloc] initWithFrame:CGRectMake((CGFloat) (_hhud.frame.origin.x),
+                                                                  (CGFloat) (_hhud.frame.origin.y), 55, 20)];
+        tumblrHUD.hudColor = _hhud.backgroundColor;
+        [self.view addSubview:tumblrHUD];
+        [tumblrHUD showAnimated:YES];
+        mitimer=[NSTimer scheduledTimerWithTimeInterval:10
+                                                 target:self
+                                               selector:@selector(killBill)
+                                               userInfo:nil
+                                                repeats:NO];
+    });
+}
 -(void)workingIcon
 {
     UIImage *licon;
@@ -56,6 +102,7 @@ id yo;
 
 -(void)showlog:(NSData *)data
 {
+  
    // NSLog(@"Datos:%@ len %u",data,(unsigned long)data.length);
     uint16_t desde,len,codeid;
     NSRange rango=NSMakeRange(0, 2);
@@ -105,6 +152,7 @@ MQTTMessageHandler llog=^(MQTTMessage *message)
         [appDelegate.client setMessageHandler:llog];
     [entries removeAllObjects];
     [super viewDidAppear:animated];
+    [self hud];
     [comm lsender:@"readlog?password=zipo" andAnswer:NULL andTimeOut:2 vcController:self];
 }
 
@@ -119,7 +167,12 @@ MQTTMessageHandler llog=^(MQTTMessage *message)
     return entries.count;
 }
 
-
+-(void) tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if([indexPath row] == entries.count-1){
+        dispatch_async(dispatch_get_main_queue(), ^{[tumblrHUD hide]; });
+    }
+}
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     int codenum;

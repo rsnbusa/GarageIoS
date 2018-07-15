@@ -9,13 +9,18 @@
 #import <UIKit/UIKit.h>
 #import "httpVC.h"
 #import "AppDelegate.h"
+#import "AMTumblrHud.h"
 
 @interface resetVC : UIViewController
 {
     httpVC *comm;
     NSString *mis;
     AppDelegate* appDelegate;
+    AMTumblrHud *tumblrHUD ;
+    NSTimer *mitimer;
 }
 
 @property (strong) IBOutlet UIImageView *bffIcon;
+@property (strong, nonatomic) IBOutlet UIImageView          *hhud;
+
 @end

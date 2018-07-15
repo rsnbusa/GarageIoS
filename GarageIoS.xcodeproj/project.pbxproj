@@ -22,6 +22,7 @@
 		678A9F061D3DDBFB00FA6031 /* blurLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 678A9F051D3DDBFB00FA6031 /* blurLabel.m */; };
 		678B4FBD1E4C0A5300937301 /* resetVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 678B4FBC1E4C0A5300937301 /* resetVC.m */; };
 		6791328D1D67C4AF00D448A0 /* queueEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = 6791328C1D67C4AF00D448A0 /* queueEntry.m */; };
+		6797063520FBC6E80039EA3F /* AMTumblrHud.m in Sources */ = {isa = PBXBuildFile; fileRef = 6797063420FBC6E70039EA3F /* AMTumblrHud.m */; };
 		679809641C89CF83006ED86F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 679809631C89CF83006ED86F /* LaunchScreen.storyboard */; };
 		67B2E78F1C9C25D3001D0068 /* coredata.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 67B2E78D1C9C25D3001D0068 /* coredata.xcdatamodeld */; };
 		67BD43A41D84E7B100582091 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 67BD43A31D84E7B100582091 /* Main.storyboard */; };
@@ -115,6 +116,8 @@
 		678B4FBC1E4C0A5300937301 /* resetVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = resetVC.m; sourceTree = "<group>"; };
 		6791328B1D67C4AF00D448A0 /* queueEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = queueEntry.h; path = ../queueEntry.h; sourceTree = "<group>"; };
 		6791328C1D67C4AF00D448A0 /* queueEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = queueEntry.m; path = ../queueEntry.m; sourceTree = "<group>"; };
+		6797063320FBC6E70039EA3F /* AMTumblrHud.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMTumblrHud.h; sourceTree = "<group>"; };
+		6797063420FBC6E70039EA3F /* AMTumblrHud.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMTumblrHud.m; sourceTree = "<group>"; };
 		679809631C89CF83006ED86F /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		67B2E78E1C9C25D3001D0068 /* coredata.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = coredata.xcdatamodel; sourceTree = "<group>"; };
 		67BD43A31D84E7B100582091 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
@@ -193,7 +196,7 @@
 		67DDACCA1EF3552E000691C3 /* Log.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Log.m; sourceTree = "<group>"; };
 		67E1FEA21CA8497200DEAAA2 /* wifiCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wifiCell.h; sourceTree = "<group>"; };
 		67E1FEA31CA8497200DEAAA2 /* wifiCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = wifiCell.m; sourceTree = "<group>"; };
-		72EC05B317E8DF3D00DCB9A3 /* HeatIoT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = HeatIoT.app; path = GarageIoT.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		72EC05B317E8DF3D00DCB9A3 /* HeatIoT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = HeatIoT.app; path = GarageIoS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		72EC05BE17E8DF3D00DCB9A3 /* GarageIoS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GarageIoS-Info.plist"; sourceTree = "<group>"; };
 		72EC05C017E8DF3D00DCB9A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		72EC05C217E8DF3D00DCB9A3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -365,6 +368,8 @@
 		72EC05BC17E8DF3D00DCB9A3 /* GarageIoT */ = {
 			isa = PBXGroup;
 			children = (
+				6797063320FBC6E70039EA3F /* AMTumblrHud.h */,
+				6797063420FBC6E70039EA3F /* AMTumblrHud.m */,
 				72EC05C517E8DF3D00DCB9A3 /* AppDelegate.h */,
 				72EC05C617E8DF3D00DCB9A3 /* AppDelegate.m */,
 				678A9F041D3DDBFB00FA6031 /* blurLabel.h */,
@@ -624,6 +629,7 @@
 				67C1758D1C89B54B00AE6CA7 /* CEFlipAnimationController.m in Sources */,
 				67C175891C89B54B00AE6CA7 /* CECardsAnimationController.m in Sources */,
 				67C175931C89B54B00AE6CA7 /* CETurnAnimationController.m in Sources */,
+				6797063520FBC6E80039EA3F /* AMTumblrHud.m in Sources */,
 				67C175901C89B54B00AE6CA7 /* CEPanAnimationController.m in Sources */,
 				67B2E78F1C9C25D3001D0068 /* coredata.xcdatamodeld in Sources */,
 				67C7A8681D6A14B100BC06C2 /* send_mosq.c in Sources */,
@@ -840,7 +846,7 @@
 					"$(PROJECT_DIR)/TabBarDemo",
 					"$(PROJECT_DIR)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.rsn.WaterIoT;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rsn.GarageIoT;
 				PRODUCT_NAME = GarageIoS;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -876,7 +882,7 @@
 					"$(PROJECT_DIR)/TabBarDemo",
 					"$(PROJECT_DIR)",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.rsn.WaterIoT;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rsn.GarageIoT;
 				PRODUCT_NAME = GarageIoS;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";

@@ -22,6 +22,51 @@ id yo;
 #define LogDebug(frmt, ...) {}
 #endif
 
+-(void)showMensaje:(NSString*)title withMessage:(NSString*)mensaje doExit:(BOOL)salir
+{
+    if(mitimer)
+        [mitimer invalidate];
+    dispatch_async(dispatch_get_main_queue(), ^{[tumblrHUD hide]; });
+    
+    
+    
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:mensaje
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {
+                                                              if (salir) exit(0);
+                                                          }];
+    
+    [alert addAction:defaultAction];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+
+-(void)killBill
+{
+    if(tumblrHUD)
+        [tumblrHUD hide];
+    [self showMensaje:@"DoorIoT Msg" withMessage:@"Comm Timeout" doExit:NO];
+}
+
+-(void)hud
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        tumblrHUD = [[AMTumblrHud alloc] initWithFrame:CGRectMake((CGFloat) (_hhud.frame.origin.x),
+                                                                  (CGFloat) (_hhud.frame.origin.y), 55, 20)];
+        tumblrHUD.hudColor = _hhud.backgroundColor;
+        [self.view addSubview:tumblrHUD];
+        [tumblrHUD showAnimated:YES];
+        mitimer=[NSTimer scheduledTimerWithTimeInterval:10
+                                                 target:self
+                                               selector:@selector(killBill)
+                                               userInfo:nil
+                                                repeats:NO];
+    });
+}
+
+
 -(IBAction)waitSlider:(UISlider*) sender
 {
     _wait.text=[NSString stringWithFormat:@"%d",(int)sender.value];
@@ -74,6 +119,7 @@ id yo;
 }
 
 -(void)showTimers:(NSArray*)partes{
+    [tumblrHUD hide];
     dispatch_async(dispatch_get_main_queue(), ^{
         CATransition *animation = [CATransition animation];
         animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
@@ -143,6 +189,7 @@ MQTTMessageHandler local=^(MQTTMessage *message)
         [appDelegate.client setMessageHandler:local];
     
     [super viewDidAppear:animated];
+    [self hud];
     [comm lsender:@"settings?password=zipo" andAnswer:&lanswer andTimeOut:2 vcController:self];
    }
 
@@ -160,8 +207,8 @@ MQTTMessageHandler local=^(MQTTMessage *message)
     NSString * mmis=[NSString stringWithFormat:@"internal?password=zipo&guard=%d&auto=%d&wwww=%d&oott=%d&cctt=%d&sstt=%d&motor=%d",_guard.isOn,_autosend.isOn,(int)_waitsl.value*1000,
                      (int)_timeoutsl.value*1000,(int)_timeoutsl.value*1000,(int)_sleepsl.value*1000,(int)_motorsl.value*1000];
     
- //  if(appDelegate.client)
-   //     [appDelegate.client setMessageHandler:viejo];
+   if(appDelegate.client)
+        [appDelegate.client setMessageHandler:NULL];
     [comm lsender:mmis andAnswer:NULL andTimeOut:2 vcController:self];
     }
 
